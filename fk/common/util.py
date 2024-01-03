@@ -31,11 +31,11 @@ class Captcha:
         '''生成验证码图形'''
         code = self.gene_text(num)
         # 图片大小120×50
-        width, height = 120, 50
+        width, height = 100, 40
         # 新图片对象
         im = Image.new('RGB', (width, height), 'white')
         # 字体
-        font = ImageFont.truetype('./static/arial.ttf', 40)
+        font = ImageFont.truetype('./static/arial.ttf', 35)
         # draw对象
         draw = ImageDraw.Draw(im)
         # 绘制字符串
@@ -45,7 +45,7 @@ class Captcha:
         # 划线
         self.draw_lines(draw, 2, width, height)
         # 高斯模糊
-        im = im.filter(ImageFilter.GaussianBlur(radius=1.5))
+        im = im.filter(ImageFilter.GaussianBlur(radius=1))
         # im.show()
         # 图片以二进制形式写入
         buf = BytesIO()
