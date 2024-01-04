@@ -1,5 +1,6 @@
-from common.util import Captcha
+from werkzeug.datastructures import MultiDict, ImmutableMultiDict
 
+from common.util import Captcha
 from flask import Blueprint, jsonify, request, session
 from werkzeug.security import check_password_hash, generate_password_hash
 from common.validator import AdminForm
@@ -29,7 +30,8 @@ def login_code():
 
 @bp.route('/add', methods=["POST"])
 def add():
-    form = AdminForm(request.json)
+    json = request.json
+    form = AdminForm(ImmutableMultiDict(json))
     if form.validate():
         username = form.username.data
         nickname = form.nickname.data

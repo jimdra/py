@@ -6,3 +6,6 @@ USERNAME = 'root'
 PASSWORD = ''
 DB_URI = 'mysql+pymysql://{}:{}@{}:{}/{}'.format(USERNAME, PASSWORD, HOSTNAME, PORT, DATABASE)
 SQLALCHEMY_DATABASE_URI = DB_URI
+
+# 配置密钥
+SECRET_KEY = 'your_secret_key'

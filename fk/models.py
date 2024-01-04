@@ -8,7 +8,7 @@ class Admin(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     username = db.Column(db.String(50), nullable=False, unique=True, comment='用户名')
     nickname = db.Column(db.String(50), nullable=False, comment='昵称')
-    password = db.Column(db.String(100), nullable=False, comment='密码')
+    password = db.Column(db.String(200), nullable=False, comment='密码')
     avatar = db.Column(db.String(100), nullable=True, comment='头像')
     email = db.Column(db.String(100), nullable=True, comment='邮箱')
     mobile = db.Column(db.String(11), nullable=True, comment='手机号')
