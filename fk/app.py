@@ -11,7 +11,7 @@ cors = CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
 app.config.from_object(config)
 app.register_blueprint(user_bp)
 db.init_app(app)
-redis_client.init_app(app)
+redis_client.init_app(app, decode_responses=True)
 migrate = Migrate(app, db)
 
 if __name__ == '__main__':

@@ -13,12 +13,14 @@ bp = Blueprint("user", __name__, url_prefix="/users")
 
 @bp.route("/login", methods=["POST"])
 def login():
-    print('cookie:', request.cookies.get('uuid'))
     json = request.json
     form = LoginForm(ImmutableMultiDict(json))
     if form.validate():
-        return jsonify({"code": 0, "message": "登录成功"})
-    return jsonify({"code": 1, "message": "登录失败", "data": form.errors})
+        return jsonify({"code": 0, "message": "登录成功", "data": form.data})
+    errors = ''
+    for field, error in form.errors.items():
+        errors += error[0]+';'
+    return jsonify({"code": 1, "message": errors, "data": {}})
 
 
 @bp.route('/code')
@@ -27,9 +29,8 @@ def login_code():
     uid = shortuuid.uuid()
     res = make_response(jsonify({'code': 0, 'message': '', 'data': image}))
     res.set_cookie('uuid', uid, samesite='None', secure=True)
-    redis_client.set(uid, codes, ex=120)
+    redis_client.set(uid, codes.lower(), ex=120)
     return res
-
 
 
 @bp.route('/add', methods=["POST"])

@@ -1,7 +1,8 @@
 import wtforms
-from flask import session
+from flask import request
 from wtforms.validators import DataRequired, Email, EqualTo, Length
-
+from exts import redis_client
+from werkzeug.security import check_password_hash
 from models import Admin
 
 
@@ -23,12 +24,17 @@ class LoginForm(wtforms.Form):
     code = wtforms.StringField(validators=[DataRequired(message="验证码不能为空")])
 
     def validate_code(self, field):
-        captcha = session.get("code")
+        uid = request.cookies.get('uuid')
+        captcha = redis_client.get(uid)
         codes = field.data
-        print(captcha, codes)
         if codes.lower() != captcha:
             raise wtforms.ValidationError("验证码错误")
 
     def validate_username(self, field):
         if not Admin.query.filter_by(username=field.data).first():
             raise wtforms.ValidationError("用户名不存在")
+
+    def validate_password(self, field):
+        admin = Admin.query.filter_by(username=self.username.data).first()
+        if not admin or not check_password_hash(admin.password, field.data):
+            raise wtforms.ValidationError("密码错误")
