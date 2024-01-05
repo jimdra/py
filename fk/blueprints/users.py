@@ -5,7 +5,7 @@ from flask import Blueprint, jsonify, request, session, make_response
 from werkzeug.security import check_password_hash, generate_password_hash
 from common.validator import AdminForm, LoginForm
 from models import Admin
-from exts import db,redis_client
+from exts import db, redis_client
 import shortuuid
 
 bp = Blueprint("user", __name__, url_prefix="/users")
@@ -13,6 +13,7 @@ bp = Blueprint("user", __name__, url_prefix="/users")
 
 @bp.route("/login", methods=["POST"])
 def login():
+    print('cookie:', request.cookies.get('uuid'))
     json = request.json
     form = LoginForm(ImmutableMultiDict(json))
     if form.validate():
@@ -23,12 +24,12 @@ def login():
 @bp.route('/code')
 def login_code():
     image, codes = Captcha().get_verify_code(num=4, is_base64=True)
-    response = make_response()
-    print(shortuuid.uuid())
-    response.set_cookie('uuid', shortuuid.uuid())
-    session['code'] = codes.lower()  # 转小写
+    uid = shortuuid.uuid()
+    res = make_response(jsonify({'code': 0, 'message': '', 'data': image}))
+    res.set_cookie('uuid', uid, samesite='None', secure=True)
+    redis_client.set(uid, codes, ex=120)
+    return res
 
-    return jsonify({'code': 0, 'message': '', 'data': image})
 
 
 @bp.route('/add', methods=["POST"])

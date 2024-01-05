@@ -53,6 +53,7 @@ class Captcha:
         buf_str = buf.getvalue()
         if is_base64:
             image = base64.b64encode(buf_str).decode('utf-8')
+            image = "data:image/png;base64," + image
         else:
             # 把buf_str作为response返回前端，并设置首部字段
             image = make_response(buf_str)
