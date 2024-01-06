@@ -1,4 +1,5 @@
 from datetime import datetime
+from itsdangerous import URLSafeTimedSerializer as Serializer
 
 from exts import db
 
@@ -16,3 +17,4 @@ class Admin(db.Model):
     update_time = db.Column(db.DateTime, nullable=True, comment='更新时间')
     login_time = db.Column(db.DateTime, nullable=True, comment='登录时间')
     status = db.Column(db.Integer, default=1, comment='状态(1:正常, 2:禁用)')
+

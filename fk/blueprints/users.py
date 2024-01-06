@@ -6,6 +6,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from common.validator import AdminForm, LoginForm
 from models import Admin
 from exts import db, redis_client
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 import shortuuid
 
 bp = Blueprint("user", __name__, url_prefix="/users")
@@ -16,11 +17,18 @@ def login():
     json = request.json
     form = LoginForm(ImmutableMultiDict(json))
     if form.validate():
-        return jsonify({"code": 0, "message": "登录成功", "data": form.data})
+        access_token = create_access_token(identity=form.data.get("username"))
+        return jsonify({"code": 0, "message": "登录成功", "data": {"token": access_token}})
     errors = ''
     for field, error in form.errors.items():
-        errors += error[0]+';'
+        errors += error[0] + ';'
     return jsonify({"code": 1, "message": errors, "data": {}})
+
+
+@bp.route("/info")
+@jwt_required()
+def info():
+    return jsonify({"code": 0, "message": "", "data": {"username": get_jwt_identity()}})
 
 
 @bp.route('/code')

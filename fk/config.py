@@ -9,7 +9,7 @@ SQLALCHEMY_DATABASE_URI = DB_URI
 
 # 配置密钥
 SECRET_KEY = 'your_secret_key'
-
+JWT_SECRET_KEY = 'your_jwt_secret_key'
 # 配置Redis连接
 REDIS_HOST = '127.0.0.1'
 REDIS_PORT = 6379
