@@ -28,7 +28,8 @@ def login():
 @bp.route("/info")
 @jwt_required()
 def info():
-    return jsonify({"code": 0, "message": "", "data": {"username": get_jwt_identity()}})
+    roles = ["admin"]
+    return jsonify({"code": 0, "message": "", "data": {"username": get_jwt_identity(), "roles": roles}})
 
 
 @bp.route('/code')
